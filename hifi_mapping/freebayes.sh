@@ -5,23 +5,28 @@ set -e -o pipefail
 
 cd $1
 
-mkdir freebayes
+mkdir -p freebayes
 
-for bam in filtered/*
-do
+cat filtered/*fastq.gz > filtered/all.fastq.gz
 
 echo /"
-samtools sort $bam -o filtered/sorted_$bam"
-samtools sort $bam -o filtered/sorted_$bam
+minimap2 -x map-hifi ../$2 filtered/all.fastq.gz -t 8 -a --secondary=no | samtools view -S -b -F 4 -F 0x800 > freebayes/${filename%.*}.bam"
+minimap2 -x map-hifi ../$2 filtered/all.fastq.gz -t 8 -a --secondary=no | samtools view -S -b -F 4 -F 0x800 > freebayes/${filename%.*}.bam
 
-done
 
-samtools merge filtered/sorted_* -o freebayes/merged_${1}.bam
+echo /"
+samtools sort freebayes/${filename%.*}.bam -o filtered/sorted_${filename%.*}.bam"
+samtools sort freebayes/${filename%.*}.bam -o filtered/sorted_${filename%.*}.bam
 
+echo /"
+samtools merge filtered/sorted_${filename%.*}.bam -o freebayes/merged_${1}.bam"
+samtools merge filtered/sorted_${filename%.*}.bam -o freebayes/merged_${1}.bam
+
+echo /"
+samtools index merged_${1}.bam"
 samtools index merged_${1}.bam
 
+echo /"
+freebayes -f ../$2 merged_${1}.bam -v freebayes/$1.vcf"
 freebayes -f ../$2 merged_${1}.bam -v freebayes/$1.vcf
-
-#CLEANUP
-rm filtered/sorted_*
 
