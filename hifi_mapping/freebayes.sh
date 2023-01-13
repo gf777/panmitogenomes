@@ -19,14 +19,10 @@ samtools sort freebayes/${1}.bam -O BAM -o filtered/sorted_${1}.bam"
 samtools sort freebayes/${1}.bam -O BAM -o filtered/sorted_${1}.bam
 
 echo "\
-samtools merge filtered/sorted_${1}.bam -o freebayes/merged_${1}.bam"
-samtools merge filtered/sorted_${1}.bam -o freebayes/merged_${1}.bam
+samtools index sorted_${1}.bam"
+samtools index sorted_${1}.bam
 
 echo "\
-samtools index merged_${1}.bam"
-samtools index merged_${1}.bam
-
-echo "\
-freebayes -f ../$2 merged_${1}.bam -v freebayes/$1.vcf"
-freebayes -f ../$2 merged_${1}.bam -v freebayes/$1.vcf
+freebayes -f ../$2 sorted_${1}.bam -v freebayes/$1.vcf"
+freebayes -f ../$2 sorted_${1}.bam -v freebayes/$1.vcf
 
