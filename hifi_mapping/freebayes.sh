@@ -3,7 +3,7 @@ set -e -o pipefail
 
 #DEPENDENCIES samtools, freebayes
 
-cd results/$1
+cd $1
 
 mkdir freebayes
 
