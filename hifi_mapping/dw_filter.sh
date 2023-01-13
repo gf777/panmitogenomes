@@ -44,7 +44,7 @@ echo "Aligning fastq/${filename%.*}.fastq.gz..."
 
 if [ ! -f alignments/${filename%.*}.bam ]; then
 
-    echo /"
+    echo "\
     minimap2 -x map-hifi ../$2 fastq/${filename%.*}.fastq.gz -t 8 -a --secondary=no | samtools view -S -b -F 4 -F 0x800 > alignments/${filename%.*}.bam"
     minimap2 -x map-hifi ../$2 fastq/${filename%.*}.fastq.gz -t 8 -a --secondary=no | samtools view -S -b -F 4 -F 0x800 > alignments/${filename%.*}.bam
 
