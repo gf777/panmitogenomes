@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -o pipefail
 
-# $1 = metadata, $2 = reference, $3 = filter threshold (% breadth of coverage)
+# $1 = metadata, $2 = reference, $3 = filter threshold (% breadth of coverage), $4 = individual assembly files
 
 #WD
 mkdir -p results
@@ -43,11 +43,16 @@ fi
 
         echo "\
         sbatch -pvgl --array=1-${FILE_NUM} --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../dw_filter.sh $ID $reference.mmi $3"
-        sbatch -pvgl --array=1-${FILE_NUM} --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../dw_filter.sh $ID $reference.mmi $3 | awk '{print $4}' > ${ID}_dw.jid
+        sbatch -pvgl --array=1-${FILE_NUM} --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../dw_filter.sh $ID $reference.mmi $3 | awk '{print $4}' > ${ID}_dw_filter.jid
         
         echo "\
-        sbatch -pvgl --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes.sh $ID $reference.mmi $3"
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes.sh $ID $reference     
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference"
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference | awk '{print $4}' > ${ID}_freebayes_reference.jid  
+        
+        echo "\
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $reference $4"
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $reference $4     
+   
 
     done
 }<../$1

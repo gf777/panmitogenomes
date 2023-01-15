@@ -86,6 +86,8 @@ awk '{printf $1 "\n"}' filtered/filtered_${SLURM_ARRAY_TASK_ID}.out > filtered/f
 
 grep alignments/${filename%.*}.fastq -f filtered/filtered.ls -A3 --no-group-separator | gzip > filtered/${filename%.*}.fastq.gz
 
+cat filtered/*fastq.gz > filtered/all.fastq.gz
+
 #CLEANUP
 gzip alignments/${filename%.*}.fastq
 rm fastq/${filename%.*}.fastq.gz raw/*
