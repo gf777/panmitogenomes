@@ -50,8 +50,8 @@ fi
         sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference | awk '{print $4}' > ${ID}_freebayes_reference.jid  
         
         echo "\
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $reference $4"
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $reference $4     
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4"
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4     
    
 
     done

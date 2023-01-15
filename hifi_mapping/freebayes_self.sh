@@ -8,8 +8,8 @@ cd $1
 mkdir -p freebayes_self
 
 echo "\
-gfastats $3 $(grep $1 $3 | tr -d ">") -o $1.fasta"
-gfastats $3 $(grep $1 $3 | tr -d ">") -o $1.fasta
+gfastats $2 $(grep $1 $2 | tr -d ">") -o $1.fasta"
+gfastats $2 $(grep $1 $2 | tr -d ">") -o $1.fasta
 
 echo "\
 minimap2 -d $1.fasta.mmi $1.fasta"
@@ -28,6 +28,6 @@ samtools index freebayes_self/sorted_${1}.bam"
 samtools index freebayes_self/sorted_${1}.bam
 
 echo "\
-freebayes -f ../$2 freebayes_self/sorted_${1}.bam -v freebayes_self/$1.vcf"
-freebayes -f ../$2 freebayes_self/sorted_${1}.bam -v freebayes_self/$1.vcf
+freebayes -f $1.fasta freebayes_self/sorted_${1}.bam -v freebayes_self/$1.vcf"
+freebayes -f $1.fasta freebayes_self/sorted_${1}.bam -v freebayes_self/$1.vcf
 
