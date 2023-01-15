@@ -6,6 +6,7 @@ set -e -o pipefail
 #WD
 mkdir -p results
 ln -f $2 results
+ln -f $4 results
 cd results
 
 #INDEX REFERENCE
@@ -46,13 +47,12 @@ fi
         sbatch -pvgl --array=1-${FILE_NUM} --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../dw_filter.sh $ID $reference.mmi $3 | awk '{print $4}' > ${ID}_dw_filter.jid
         
         echo "\
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference"
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference | awk '{print $4}' > ${ID}_freebayes_reference.jid  
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/freebayes_reference.%A_%a.out --error=$ID/log/freebayes_reference.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference"
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/freebayes_reference.%A_%a.out --error=$ID/log/freebayes_reference.%A_%a.out --cpus-per-task=8 ../freebayes_reference.sh $ID $reference | awk '{print $4}' > ${ID}_freebayes_reference.jid  
         
         echo "\
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4"
-        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/dw.%A_%a.out --error=$ID/log/dw.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4     
-   
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/freebayes_self.%A_%a.out --error=$ID/log/freebayes_self.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4"
+        sbatch -pvgl --dependency=afterok:$(cat ${ID}_dw_filter.jid) --output=$ID/log/freebayes_self.%A_%a.out --error=$ID/log/freebayes_self.%A_%a.out --cpus-per-task=8 ../freebayes_self.sh $ID $4     
 
     done
 }<../$1
