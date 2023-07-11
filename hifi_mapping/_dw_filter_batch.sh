@@ -31,7 +31,7 @@ fi
         mkdir -p $ID/log $ID/raw $ID/fastq $ID/alignments $ID/filtered
 
         #COLLECT READ PATHS
-        IFS=';' read -r -a BAM <<< "${LINE[5]}"
+        IFS=';' read -r -a BAM <<< "${LINE[1]}"
 
         rm -f $ID/hifi_input.ls
 
